@@ -1,3 +1,5 @@
+use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
 use rayon::prelude::*;
 use std::fmt::Debug;
 
@@ -28,8 +30,19 @@ fn main() {
         }
         result
     });
-
     // mutates the array using rayon's par_iter_mut() function
     // arr.par_iter_mut().for_each(|p| *p -= 1);
     // println!("{:?}", arr);
+
+    // create a vec of empty string
+    let mut vec = vec![String::new(); 100_000];
+    vec.par_iter_mut().for_each(|p| {
+        println!("{}", p);
+        let mut rng = thread_rng();
+        // create a random string
+        let random_chars = (0..5).map(|_| rng.sample(&Alphanumeric) as char).collect();
+        // set to the vec p
+        *p = random_chars;
+    });
+    vec.par_sort_unstable();
 }
